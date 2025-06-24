@@ -1,0 +1,45 @@
+services:
+  # Oracle Database
+  oracle-db:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: oracle-test-db
+    environment:
+      ORACLE_PASSWORD: Oracle123!
+      ORACLE_DATABASE: TESTDB
+    ports:
+      - "1521:1521"
+      - "5500:5500"  # Oracle Enterprise Manager Express
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+      - ./init-scripts:/container-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "sqlplus", "-L", "system/Oracle123!@//localhost:1521/XE", "@/dev/null"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Liquibase runner
+  liquibase:
+    image: liquibase/liquibase:4.25
+    container_name: liquibase-runner
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    volumes:
+      - ./liquibase:/liquibase/changelog
+      - ./drivers:/liquibase/lib
+    environment:
+      LIQUIBASE_COMMAND_URL: jdbc:oracle:thin:@oracle-db:1521:XE
+      LIQUIBASE_COMMAND_USERNAME: system
+      LIQUIBASE_COMMAND_PASSWORD: Oracle123!
+      LIQUIBASE_COMMAND_CHANGELOG_FILE: changelog/db.changelog-master.xml
+    command: ["tail", "-f", "/dev/null"]  # Keep container running
+    networks:
+      - default
+
+volumes:
+  oracle_data:
+
+networks:
+  default:
+    driver: bridge
