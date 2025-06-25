@@ -1,7 +1,7 @@
 --liquibase formatted sql
 
 --changeset sihan:create-test-base-table
-DROP TABLE test_base CASCADE CONSTRAINTS PURGE;
+-- DROP TABLE test_base CASCADE CONSTRAINTS PURGE;
 
 CREATE TABLE test_base (
   id   NUMBER,
@@ -13,7 +13,7 @@ INSERT INTO test_base VALUES (1, 'hello');
 COMMIT;
 
 --changeset sihan:create-test-mv
-DROP MATERIALIZED VIEW test_mv;
+-- DROP MATERIALIZED VIEW test_mv;
 
 CREATE MATERIALIZED VIEW test_mv
 BUILD IMMEDIATE
