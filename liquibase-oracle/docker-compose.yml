@@ -29,7 +29,7 @@ services:
       - ./drivers:/liquibase/lib
       - ./test.sh:/liquibase/test.sh:ro
     environment:
-      LIQUIBASE_COMMAND_URL: jdbc:oracle:thin:@//oracle-db:1521/TESTD      SELECT owner, table_name FROM all_tables WHERE table_name = 'TEST_BASE';B
+      LIQUIBASE_COMMAND_URL: jdbc:oracle:thin:@//oracle-db:1521/TESTDB
       LIQUIBASE_COMMAND_USERNAME: system
       LIQUIBASE_COMMAND_PASSWORD: Oracle123!
       LIQUIBASE_COMMAND_CHANGELOG_FILE: changelog/db.changelog-master.xml
