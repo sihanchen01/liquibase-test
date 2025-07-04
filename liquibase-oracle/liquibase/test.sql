@@ -1,26 +1,27 @@
 --liquibase formatted sql
 
---changeset sihan:create-test-base-table
--- DROP TABLE test_base CASCADE CONSTRAINTS PURGE;
+--changeset sihan:test-run-proc
+--comment: Call my Oracle stored procedure
+BEGIN
+  test_user.my_procedure('hello from liquibase');
+END;
+/
 
-CREATE TABLE test_base (
-  id   NUMBER,
-  name VARCHAR2(50)
-);
+--changeset sihan:test-run-proc2
+--comment: Call my Oracle stored procedure
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Start');
+  test_user.my_procedure('hello again');
+  DBMS_OUTPUT.PUT_LINE('Done');
+END;
+/
 
---changeset sihan:insert-test-data-1
-INSERT INTO test_base VALUES (1, 'hello');
-COMMIT;
 
---changeset sihan:create-test-mv
--- DROP MATERIALIZED VIEW test_mv;
-
-CREATE MATERIALIZED VIEW test_mv
-BUILD IMMEDIATE
-REFRESH ON DEMAND
-AS
-SELECT * FROM test_base;
-
---changeset sihan:insert-test-data-2
-INSERT INTO test_base VALUES (2, 'world');
-COMMIT;
+--changeset sihan:test-run-proc3
+DECLARE
+  v_count NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO v_count FROM dual;
+  DBMS_OUTPUT.PUT_LINE(v_count);
+END;
+/
